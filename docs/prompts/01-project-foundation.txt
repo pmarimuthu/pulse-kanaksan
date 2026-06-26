@@ -1,0 +1,24 @@
+Create the complete project foundation for pulse.kanaksan.com — a real-time visitor analytics dashboard.
+
+Build every file in the following structure:
+- public/tracker.js — embeddable visitor tracker with localStorage dedup gate before Firebase init, anonymous auth, browser geolocation, Firestore write with serverTimestamp and 60-day TTL field
+- public/login.html — centered admin login card with Geist font, emerald live dot, Firebase Email/Password auth, inline error handling
+- public/index.html — auth-gated dashboard: 56px topbar, Google Map (clustered green pins), 344px fixed side panel with stats (total/unique/today) and recent visitors list
+- public/dashboard.js — Firestore query with limit(500), app and date filters, MarkerClusterer via CDN, info windows, time-ago formatting
+- public/app.css — shared styles using Geist font, #10b981 emerald accent, pulse-dot keyframe animation
+- functions/index.js — optional weekly scheduled cleanup of visits older than 60 days using batched deletes
+- functions/package.json — firebase-admin and firebase-functions v5 dependencies
+- firestore.rules — anonymous create allowed only if uid matches auth.uid and timestamp matches request.time; read only for admin email; no update/delete
+- firestore.indexes.json — composite index on app ASC + timestamp DESC
+- firebase.json — hosting with tracker.js CORS and cache headers, rewrites to index.html
+- .firebaserc — default project alias pulse-kanaksan
+- README.md — full setup guide: Firebase project creation, config replacement, admin user, Maps API key, TTL policy, deploy steps, custom domain, embed snippet, acceptance test
+
+Constants to replace (clearly marked in each file):
+- REPLACE_WITH_FIREBASE_API_KEY
+- REPLACE_WITH_SENDER_ID
+- REPLACE_WITH_APP_ID
+- REPLACE_WITH_GOOGLE_MAPS_API_KEY
+- Admin email: mars@kanaksan.com
+
+Tech: Firebase 10 modular SDK via CDN, vanilla HTML/JS, no bundler, no framework, no npm frontend deps.

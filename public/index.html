@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>pulse — dashboard</title>
+  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">⚡ pulse</div>
+    <select id="proj-select"></select>
+    <div class="topbar-right">
+      <span id="last-updated"></span>
+      <button id="refresh-btn" title="Refresh"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </header>
+
+  <main class="dash">
+    <div class="metrics" id="metrics">
+      <div class="metric sk"><div class="sk-line"></div><div class="sk-val"></div></div>
+      <div class="metric sk"><div class="sk-line"></div><div class="sk-val"></div></div>
+      <div class="metric sk"><div class="sk-line"></div><div class="sk-val"></div></div>
+      <div class="metric sk"><div class="sk-line"></div><div class="sk-val"></div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card" id="card-pages">
+        <h3>
+          <i class="ti ti-file-analytics" aria-hidden="true"></i> Top pages
+          <button class="fs-btn" id="fs-pages" title="Fullscreen"><i class="ti ti-arrows-maximize" aria-hidden="true"></i></button>
+        </h3>
+        <div id="pages-list"></div>
+      </div>
+      <div class="card" id="card-ratings">
+        <h3>
+          <i class="ti ti-mood-smile" aria-hidden="true"></i> Understanding ratings
+          <button class="fs-btn" id="fs-ratings" title="Fullscreen"><i class="ti ti-arrows-maximize" aria-hidden="true"></i></button>
+        </h3>
+        <div id="ratings-avg" class="ratings-avg-wrap"></div>
+        <div id="ratings-list"></div>
+      </div>
+    </div>
+
+    <div class="card" id="card-issues">
+      <h3>
+        <i class="ti ti-bug" aria-hidden="true"></i> Recent issues
+        <button class="fs-btn" id="fs-issues" title="Fullscreen"><i class="ti ti-arrows-maximize" aria-hidden="true"></i></button>
+      </h3>
+      <div id="issues-list"></div>
+      <div class="pagination" id="issues-pagination">
+        <button id="pg-prev" title="Previous"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+        <span id="pg-info"></span>
+        <button id="pg-next" title="Next"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>

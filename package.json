@@ -1,0 +1,19 @@
+{
+  "name": "pulse-kanaksan",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "deploy:indexes": "firebase deploy --only firestore:indexes",
+    "deploy:functions": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^4.0.0",
+    "firebase": "^11.0.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  }
+}

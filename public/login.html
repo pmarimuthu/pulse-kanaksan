@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pulse — Admin Login</title>
+  <link rel="stylesheet" href="app.css" />
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #f7f7f8; }
+    .login-card {
+      background: #fff;
+      border: 1px solid #ededf0;
+      border-radius: 14px;
+      padding: 40px 36px 36px;
+      width: 360px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .login-wordmark { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+    .login-wordmark .dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse-dot 2s ease-in-out infinite; }
+    .login-wordmark span { font-size: 18px; font-weight: 600; color: #09090b; letter-spacing: -0.3px; }
+    .login-heading { font-size: 14px; color: #71717a; margin-bottom: 28px; }
+    .btn-google {
+      width: 100%; padding: 10px 16px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: #fff; color: #09090b;
+      border: 1px solid #e4e4e7; border-radius: 8px;
+      font-size: 14px; font-weight: 500; font-family: inherit;
+      cursor: pointer; transition: background .15s, border-color .15s;
+    }
+    .btn-google:hover { background: #f7f7f8; border-color: #d4d4d8; }
+    .btn-google svg { flex-shrink: 0; }
+    .error-msg { margin-top: 14px; font-size: 13px; color: #ef4444; display: none; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="login-wordmark">
+      <div class="dot"></div>
+      <span>pulse</span>
+    </div>
+    <p class="login-heading">Admin access only</p>
+    <button class="btn-google" id="googleBtn">
+      <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+    <p class="error-msg" id="errorMsg"></p>
+  </div>
+
+  <script type="module">
+    import { FIREBASE_CONFIG, ADMIN_EMAIL } from '/config.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js';
+
+    const app = initializeApp(FIREBASE_CONFIG);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ login_hint: ADMIN_EMAIL });
+
+    onAuthStateChanged(auth, function (user) {
+      if (user && user.email === ADMIN_EMAIL) {
+        window.location.href = '/';
+      }
+    });
+
+    document.getElementById('googleBtn').addEventListener('click', async function () {
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+      try {
+        const result = await signInWithPopup(auth, provider);
+        if (result.user.email !== ADMIN_EMAIL) {
+          await auth.signOut();
+          errorMsg.textContent = 'Access denied. Only the admin account may sign in.';
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        if (err.code !== 'auth/popup-closed-by-user') {
+          errorMsg.textContent = err.message;
+          errorMsg.style.display = 'block';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
