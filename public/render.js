@@ -16,14 +16,23 @@ const BASE_URL = 'https://learn.kanaksan.com'
 const SUBJ_CODE = { physics: 'phy', chemistry: 'che', maths: 'mat', biology: 'bio' }
 
 function shortKey(pageKey) {
-  const m = pageKey.match(/ncert_class(\d+)_(\w+)_chapters_(\d+)-[^_]+_([\w-]+)$/)
-  if (!m) return pageKey
-  const [, cls, subj, ch, lesson] = m
-  return `ncert/${cls}/${SUBJ_CODE[subj] ?? subj}/ch${ch}/${lesson}`
+  if (pageKey === 'home') return '/'
+  const mLesson = pageKey.match(/ncert_class(\d+)_(\w+)_chapters_(\d+)-[^_]+_([\w-]+)$/)
+  if (mLesson) {
+    const [, cls, subj, ch, lesson] = mLesson
+    return `ncert/${cls}/${SUBJ_CODE[subj] ?? subj}/ch${ch}/${lesson}`
+  }
+  const mChapter = pageKey.match(/ncert_class(\d+)_(\w+)_chapters_(\d+)-([^_]+)$/)
+  if (mChapter) {
+    const [, cls, subj, ch] = mChapter
+    return `ncert/${cls}/${SUBJ_CODE[subj] ?? subj}/ch${ch}`
+  }
+  return pageKey
 }
 
 function pageUrl(pageKey) {
-  return BASE_URL + '/' + pageKey.replace(/_/g, '/').replace('/chapters/', '/chapters/')
+  if (pageKey === 'home') return BASE_URL + '/'
+  return BASE_URL + '/' + pageKey.replace(/_/g, '/')
 }
 
 function timeAgo(ts) {
