@@ -6,37 +6,19 @@ service cloud.firestore {
       allow read: if false;
       allow create: if fingerprintId.size() == 32
         && request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
-      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstSeen', 'lastSeen']);
+      allow update: if request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
       allow delete: if false;
-
-      match /projects/{projectId} {
-        allow read: if false;
-        allow create: if request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
-        allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen']);
-        allow delete: if false;
-
-        match /pages/{pageKey} {
-          allow read: if false;
-          allow create: if request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
-          allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen']);
-          allow delete: if false;
-        }
-      }
     }
 
     match /projects/{projectId} {
       match /stats/{doc} {
         allow read: if true;
-        allow create: if request.resource.data.keys().hasAll(['total', 'unique', 'todayCount', 'todayDate']);
-        allow update: if request.resource.data.keys().hasAll(['total', 'unique', 'todayCount', 'todayDate']);
-        allow delete: if false;
+        allow write: if true;
       }
 
       match /pages/{pageKey} {
         allow read: if true;
-        allow create: if request.resource.data.keys().hasAll(['pageKey', 'total', 'unique']);
-        allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['total', 'unique']);
-        allow delete: if false;
+        allow write: if true;
       }
 
       match /ratings/{ratingId} {
@@ -58,15 +40,11 @@ service cloud.firestore {
 
       match /fingerprints/{fingerprintId} {
         allow read: if true;
-        allow create: if request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
-        allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen']);
-        allow delete: if false;
+        allow write: if true;
 
         match /pages/{pageKey} {
           allow read: if true;
-          allow create: if request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
-          allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen']);
-          allow delete: if false;
+          allow write: if true;
         }
       }
     }
