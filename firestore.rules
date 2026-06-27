@@ -55,6 +55,20 @@ service cloud.firestore {
           && request.resource.data.comment is string;
         allow update, delete: if false;
       }
+
+      match /fingerprints/{fingerprintId} {
+        allow read: if true;
+        allow create: if request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
+        allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen']);
+        allow delete: if false;
+
+        match /pages/{pageKey} {
+          allow read: if true;
+          allow create: if request.resource.data.keys().hasAll(['firstSeen', 'lastSeen']);
+          allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen']);
+          allow delete: if false;
+        }
+      }
     }
 
     match /{document=**} {
