@@ -69,3 +69,5 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f5f4f0; c
 .pagination button:hover:not(:disabled) { background: #ededea; }
 .pagination button:disabled { opacity: 0.35; cursor: default; }
 #pg-info { font-size: 12px; color: #888; }
+a.page-key { color: #333; text-decoration: none; }
+a.page-key:hover { color: #378ADD; text-decoration: underline; }

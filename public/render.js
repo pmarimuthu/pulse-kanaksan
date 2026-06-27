@@ -11,6 +11,21 @@ function toIST(ts) {
   })
 }
 
+const BASE_URL = 'https://learn.kanaksan.com'
+
+const SUBJ_CODE = { physics: 'phy', chemistry: 'che', maths: 'mat', biology: 'bio' }
+
+function shortKey(pageKey) {
+  const m = pageKey.match(/ncert_class(\d+)_(\w+)_chapters_(\d+)-[^_]+_([\w-]+)$/)
+  if (!m) return pageKey
+  const [, cls, subj, ch, lesson] = m
+  return `ncert/${cls}/${SUBJ_CODE[subj] ?? subj}/ch${ch}/${lesson}`
+}
+
+function pageUrl(pageKey) {
+  return BASE_URL + '/' + pageKey.replace(/_/g, '/').replace('/chapters/', '/chapters/')
+}
+
 function timeAgo(ts) {
   if (!ts?.toMillis) return ''
   const s = Math.floor((Date.now() - ts.toMillis()) / 1000)
@@ -41,7 +56,7 @@ export function renderPages(pages) {
   const max = pages[0].total || 1
   el.innerHTML = pages.map(p => `
     <div class="page-row">
-      <span class="page-key" title="${p.pageKey}">${p.pageKey}</span>
+      <a class="page-key" href="${pageUrl(p.pageKey)}" target="_blank" rel="noopener" title="${p.pageKey}">${shortKey(p.pageKey)}</a>
       <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(p.total / max * 100)}%"></div></div>
       <span class="page-num">${p.total}</span>
     </div>`).join('')
