@@ -86,5 +86,5 @@ async function load() {
 
 projSelect.addEventListener('change', load)
 refreshBtn.addEventListener('click', load)
-setInterval(load, REFRESH_MS)
+if (REFRESH_MS > 0) setInterval(load, REFRESH_MS)
 load()

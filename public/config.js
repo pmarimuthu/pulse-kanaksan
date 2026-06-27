@@ -12,4 +12,4 @@ export const PROJECTS = [
   { id: 'vote.kanaksan.com',  label: 'vote.kanaksan.com'  },
 ]
 
-export const REFRESH_MS = 60_000
+export const REFRESH_MS = 0
