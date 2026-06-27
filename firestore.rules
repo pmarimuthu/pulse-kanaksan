@@ -28,7 +28,7 @@ service cloud.firestore {
       match /stats/{doc} {
         allow read: if true;
         allow create: if request.resource.data.keys().hasAll(['total', 'unique', 'todayCount', 'todayDate']);
-        allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['total', 'unique', 'todayCount', 'todayDate']);
+        allow update: if request.resource.data.keys().hasAll(['total', 'unique', 'todayCount', 'todayDate']);
         allow delete: if false;
       }
 
