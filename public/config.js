@@ -8,8 +8,9 @@ export const FIREBASE_CONFIG = {
 }
 
 export const PROJECTS = [
-  { id: 'learn.kanaksan.com', label: 'learn.kanaksan.com' },
-  { id: 'vote.kanaksan.com',  label: 'vote.kanaksan.com'  },
+  { id: 'learn.kanaksan.com',    label: 'learn.kanaksan.com'    },
+  { id: 'vote.kanaksan.com',     label: 'vote.kanaksan.com'     },
+  { id: 'calendar.kanaksan.com', label: 'calendar.kanaksan.com' },
 ]
 
 export const REFRESH_MS = 0
