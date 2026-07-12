@@ -2,6 +2,14 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    match /visits/{visitId} {
+      allow read: if false;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['uid', 'app', 'timestamp', 'ttl'])
+        && request.resource.data.app is string;
+      allow update, delete: if false;
+    }
+
     match /visitors/{fingerprintId} {
       allow read: if false;
       allow create: if fingerprintId.size() == 32
@@ -15,12 +23,10 @@ service cloud.firestore {
         allow read: if true;
         allow write: if true;
       }
-
       match /pages/{pageKey} {
         allow read: if true;
         allow write: if true;
       }
-
       match /ratings/{ratingId} {
         allow read: if true;
         allow create, update: if request.resource.data.keys().hasAll(['pageKey', 'fingerprintId', 'score', 'ts'])
@@ -29,7 +35,6 @@ service cloud.firestore {
           && request.resource.data.score <= 5;
         allow delete: if false;
       }
-
       match /issues/{issueId} {
         allow read: if true;
         allow create: if request.resource.data.keys().hasAll(['pageKey', 'fingerprintId', 'category', 'comment', 'ts'])
@@ -37,11 +42,9 @@ service cloud.firestore {
           && request.resource.data.comment is string;
         allow update, delete: if false;
       }
-
       match /fingerprints/{fingerprintId} {
         allow read: if true;
         allow write: if true;
-
         match /pages/{pageKey} {
           allow read: if true;
           allow write: if true;
