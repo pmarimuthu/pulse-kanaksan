@@ -1,6 +1,6 @@
 import {
   getFirestore, doc, getDoc,
-  collection, getDocs, query, orderBy, limit,
+  collection, getDocs, query, orderBy, where, limit,
 } from 'https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js'
 
 let db
@@ -46,4 +46,14 @@ export async function loadAll(projectId) {
     fetchIssues(projectId),
   ])
   return { stats, pages, ratings, issues }
+}
+
+export async function fetchApps() {
+  const q = query(
+    collection(db, 'apps'),
+    where('active', '==', true),
+    orderBy('order', 'asc')
+  )
+  const snap = await getDocs(q)
+  return snap.docs.map(d => ({ id: d.id, label: d.data().label }))
 }

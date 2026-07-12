@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js'
-import { FIREBASE_CONFIG, PROJECTS, REFRESH_MS } from './config.js'
-import { initDb, loadAll } from './data.js'
+import { FIREBASE_CONFIG, REFRESH_MS } from './config.js'
+import { initDb, loadAll, fetchApps } from './data.js'
 import { renderMetrics, renderPages, renderRatings, renderIssues } from './render.js'
 
 const app = initializeApp(FIREBASE_CONFIG, 'pulse-dashboard')
@@ -14,13 +14,64 @@ const PAGE_SIZE = 10
 let allIssues = []
 let issuesPage = 0
 
-PROJECTS.forEach(p => {
-  const opt = document.createElement('option')
-  opt.value = p.id
-  opt.textContent = p.label
-  projSelect.appendChild(opt)
+// ── LocalStorage keys ──────────────────────────────────────────
+const LS_PROJECT = 'pulse_selected_project'
+const LS_THEME   = 'pulse_theme'
+
+// ── Theme toggle ───────────────────────────────────────────────
+const themeBtn  = document.getElementById('theme-btn')
+const themeIcon = document.getElementById('theme-icon')
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme)
+  themeIcon.className = theme === 'dark' ? 'ti ti-moon' : 'ti ti-sun'
+  localStorage.setItem(LS_THEME, theme)
+}
+
+applyTheme(localStorage.getItem(LS_THEME) || 'dark')
+
+themeBtn.addEventListener('click', () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+  applyTheme(next)
 })
 
+// ── Load apps from Firestore and populate dropdown ─────────────
+async function initProjects() {
+  let projects = []
+  try {
+    projects = await fetchApps()
+  } catch (err) {
+    console.error('[pulse] failed to load apps:', err)
+  }
+
+  if (!projects.length) {
+    const opt = document.createElement('option')
+    opt.value = ''
+    opt.textContent = 'No apps configured'
+    projSelect.appendChild(opt)
+    return
+  }
+
+  projects.forEach(p => {
+    const opt = document.createElement('option')
+    opt.value = p.id
+    opt.textContent = p.label
+    projSelect.appendChild(opt)
+  })
+
+  const saved      = localStorage.getItem(LS_PROJECT)
+  const savedValid = projects.some(p => p.id === saved)
+  projSelect.value = savedValid ? saved : projects[0].id
+
+  load()
+}
+
+projSelect.addEventListener('change', () => {
+  localStorage.setItem(LS_PROJECT, projSelect.value)
+  load()
+})
+
+// ── Issue pagination ───────────────────────────────────────────
 function renderIssuePage() {
   const start = issuesPage * PAGE_SIZE
   renderIssues(allIssues.slice(start, start + PAGE_SIZE))
@@ -38,6 +89,7 @@ document.getElementById('pg-next').addEventListener('click', () => {
   if (issuesPage < total - 1) { issuesPage++; renderIssuePage() }
 })
 
+// ── Fullscreen ─────────────────────────────────────────────────
 function toggleFullscreen(cardId, btnId) {
   const card = document.getElementById(cardId)
   const btn  = document.getElementById(btnId)
@@ -60,6 +112,7 @@ document.getElementById('fs-pages').addEventListener('click',   () => toggleFull
 document.getElementById('fs-ratings').addEventListener('click', () => toggleFullscreen('card-ratings', 'fs-ratings'))
 document.getElementById('fs-issues').addEventListener('click',  () => toggleFullscreen('card-issues',  'fs-issues'))
 
+// ── Data load ──────────────────────────────────────────────────
 async function load() {
   refreshBtn.disabled = true
   lastUpdated.textContent = 'Loading…'
@@ -84,7 +137,7 @@ async function load() {
   }
 }
 
-projSelect.addEventListener('change', load)
 refreshBtn.addEventListener('click', load)
 if (REFRESH_MS > 0) setInterval(load, REFRESH_MS)
-load()
+
+initProjects()

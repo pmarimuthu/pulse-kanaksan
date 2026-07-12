@@ -7,14 +7,26 @@
   <title>pulse — dashboard</title>
   <link rel="stylesheet" href="app.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+
+  <script>
+    (function () {
+      const t = localStorage.getItem('pulse_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
   <header class="topbar">
-    <div class="logo">⚡ pulse</div>
+    <div class="logo">⚡ pulse ⚡</div>
     <select id="proj-select"></select>
     <div class="topbar-right">
       <span id="last-updated"></span>
-      <button id="refresh-btn" title="Refresh"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      <button id="refresh-btn" title="Refresh">
+        <i class="ti ti-refresh" aria-hidden="true"></i>
+      </button>
+      <button id="theme-btn" title="Toggle theme">
+        <i class="ti ti-moon" aria-hidden="true" id="theme-icon"></i>
+      </button>
     </div>
   </header>
 

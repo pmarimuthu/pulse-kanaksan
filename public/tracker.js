@@ -1,5 +1,6 @@
 (function () {
-  const script = document.currentScript;
+  const script = document.currentScript
+    || document.querySelector('script[src*="pulse.kanaksan.com/tracker.js"]');
   const app = (script && script.getAttribute('data-app')) || 'unknown';
   const today = new Date().toISOString().slice(0, 10);
   const dedupKey = 'pulse_visited_' + app + '_' + today;
@@ -9,7 +10,7 @@
   function run() {
     try {
       Promise.all([
-        import('/config.js'),
+        import('https://pulse.kanaksan.com/config.js'),  // ← fix 1
         import('https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js'),
         import('https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js'),
         import('https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js')
