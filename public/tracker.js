@@ -2,7 +2,7 @@
   'use strict';
 
   var script = document.currentScript
-    || document.querySelector('script[src*="pulse.kanaksan.com/tracker.js"]');
+    || document.querySelector('script[src*="tracker.js"][data-app]');
   var projectId = (script && script.getAttribute('data-app')) || 'unknown';
   var pageKey   = location.pathname.replace(/\/$/, '') || '/';
   var today     = new Date().toISOString().slice(0, 10);
