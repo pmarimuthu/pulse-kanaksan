@@ -11,6 +11,7 @@ export const PROJECTS = [
   { id: 'learn.kanaksan.com',    label: 'learn.kanaksan.com'    },
   { id: 'vote.kanaksan.com',     label: 'vote.kanaksan.com'     },
   { id: 'calendar.kanaksan.com', label: 'calendar.kanaksan.com' },
+  { id: 'author.kanaksan.com', label: 'author.kanaksan.com' },
 ]
 
 export const REFRESH_MS = 0
